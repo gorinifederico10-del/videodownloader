@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Video Downloader</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #0f0f0f;
+            color: white;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background: #1a1a1a;
+            padding: 40px;
+            border-radius: 16px;
+            width: 500px;
+            text-align: center;
+        }
+        h1 { margin-bottom: 8px; font-size: 28px; }
+        p { color: #888; margin-bottom: 30px; font-size: 14px; }
+        input {
+            width: 100%;
+            padding: 14px;
+            border-radius: 8px;
+            border: 1px solid #333;
+            background: #0f0f0f;
+            color: white;
+            font-size: 15px;
+            margin-bottom: 16px;
+        }
+        button {
+            width: 100%;
+            padding: 14px;
+            background: #ff0050;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:hover { background: #cc0040; }
+        #status { margin-top: 20px; font-size: 14px; color: #888; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Video Downloader</h1>
+        <p>YouTube - TikTok - Instagram - Twitter y mas</p>
+        <input type="text" id="urlInput" placeholder="Pega el link del video aca..." />
+        <button onclick="descargar()">Descargar</button>
+        <div id="status"></div>
+    </div>
+    <script>
+        async function descargar() {
+            var url = document.getElementById("urlInput").value;
+            var status = document.getElementById("status");
+            if (!url) {
+                status.textContent = "Pega una URL primero.";
+                return;
+            }
+            status.textContent = "Descargando... puede tardar unos segundos.";
+            try {
+                var response = await fetch("http://127.0.0.1:8000/download", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ url: url })
+                });
+                if (!response.ok) throw new Error("Error");
+                var blob = await response.blob();
+                var a = document.createElement("a");
+                a.href = URL.createObjectURL(blob);
+                a.download = "video.mp4";
+                a.click();
+                status.textContent = "Descarga completa!";
+            } catch(err) {
+                status.textContent = "Algo salio mal. Revisa la URL.";
+            }
+        }
+    </script>
+</body>
+</html>
