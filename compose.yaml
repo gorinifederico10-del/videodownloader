@@ -1,6 +1,5 @@
 services:
   videodownloader:
-    image: ghcr.io/matiasjrossi/videodownloader:latest
     build: .
     ports:
       - "8000:8000"
